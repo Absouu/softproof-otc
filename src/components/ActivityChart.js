@@ -22,7 +22,7 @@ function ActivityChart({ data = [], title = "Activity Overview" }) {
         {title}
       </h4>
       
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+      <div className="activity-chart" style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
         <div style={{ flex: 1 }}>
           <div className="text-caption" style={{ color: '#64748b', marginBottom: '0.5rem' }}>
             Verifications

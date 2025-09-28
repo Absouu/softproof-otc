@@ -334,7 +334,7 @@ function Dashboard() {
 
           {/* Tab Navigation */}
           <div style={{ marginBottom: '2rem' }}>
-            <div style={{ 
+            <div className="tab-nav" style={{ 
               display: 'flex', 
               borderBottom: '2px solid #E1E4E8',
               marginBottom: '1.5rem'
