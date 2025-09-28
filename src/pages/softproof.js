@@ -353,12 +353,54 @@ function SoftProof() {
         maxWidth: '600px',
         margin: '0 auto 2rem'
       }}>
-        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333', textAlign: 'center' }}>
+        <h3 className="text-secondary" style={{ margin: '0 0 1rem 0', textAlign: 'center' }}>
           Verify Wallet Ownership
         </h3>
-        <p style={{ margin: '0 0 1.5rem 0', fontSize: '0.9rem', color: '#6c757d', textAlign: 'center' }}>
+        <p className="text-body" style={{ margin: '0 0 1.5rem 0', color: '#64748b', textAlign: 'center' }}>
           Complete on-chain verification in under 2 minutes
         </p>
+        
+        {/* Progress Steps */}
+        <div className="progress-steps" style={{ marginBottom: '2rem' }}>
+          <div className={`progress-step ${!proof ? 'active' : 'completed'}`}>
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>edit</span>
+          </div>
+          <div style={{ flex: 1, height: '2px', background: proof ? '#4CAF50' : '#E1E4E8', margin: '0 8px' }}></div>
+          <div className={`progress-step ${proof && !result?.verified ? 'active' : result?.verified ? 'completed' : 'pending'}`}>
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>send</span>
+          </div>
+          <div style={{ flex: 1, height: '2px', background: result?.verified ? '#4CAF50' : '#E1E4E8', margin: '0 8px' }}></div>
+          <div className={`progress-step ${result?.verified ? 'completed' : 'pending'}`}>
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>check_circle</span>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div className="text-caption" style={{ fontWeight: '500', color: !proof ? '#3b82f6' : '#64748b' }}>
+              Step 1: Enter Details
+            </div>
+            <div className="text-meta" style={{ color: '#64748b' }}>
+              Wallet address & amount
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div className="text-caption" style={{ fontWeight: '500', color: proof && !result?.verified ? '#3b82f6' : '#64748b' }}>
+              Step 2: Send Payment
+            </div>
+            <div className="text-meta" style={{ color: '#64748b' }}>
+              Micropayment verification
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div className="text-caption" style={{ fontWeight: '500', color: result?.verified ? '#3b82f6' : '#64748b' }}>
+              Step 3: Verified
+            </div>
+            <div className="text-meta" style={{ color: '#64748b' }}>
+              Access dashboard
+            </div>
+          </div>
+        </div>
         
         {/* Safety Reminder Box */}
         <div style={{
@@ -588,9 +630,23 @@ function SoftProof() {
           maxWidth: '600px',
           margin: '0 auto 2rem'
         }}>
-          <h4 style={{ margin: '0 0 1.5rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333', textAlign: 'center' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '8px' }}>payment</span>Payment Instructions
+          <h4 className="text-tertiary" style={{ margin: '0 0 1.5rem 0', textAlign: 'center' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '8px' }}>payment</span>Step 2: Send Micropayment
           </h4>
+          
+          <div style={{
+            background: '#e8f5e8',
+            border: '1px solid #4caf50',
+            borderRadius: '8px',
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            textAlign: 'center'
+          }}>
+            <p className="text-body" style={{ margin: 0, color: '#2e7d32', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>info</span>
+              Send the exact amount to the address below to complete verification
+            </p>
+          </div>
           
           <div style={{ 
             background: '#f8f9fa', 
@@ -771,22 +827,57 @@ function SoftProof() {
       )}
 
       {result && result.error && !result.verified && (
-        <div style={{
-          background: 'white',
+        <div className="card fade-in" style={{
           border: '2px solid #dc3545',
-          borderRadius: '12px',
-          padding: '2rem',
-          marginBottom: '2rem',
           maxWidth: '600px',
           margin: '0 auto 2rem',
           textAlign: 'center'
         }}>
           <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '2rem' }}>error</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#dc3545' }}>error</span>
           </div>
-          <p style={{ margin: 0, fontSize: '1rem', color: '#dc3545' }}>
+          <h4 className="text-tertiary" style={{ margin: '0 0 1rem 0', color: '#dc3545' }}>
+            Verification Failed
+          </h4>
+          <p className="text-body" style={{ margin: '0 0 1.5rem 0', color: '#dc3545' }}>
             {result.error}
           </p>
+          <div style={{
+            background: '#f8d7da',
+            border: '1px solid #f5c6cb',
+            borderRadius: '8px',
+            padding: '1rem',
+            marginBottom: '1rem'
+          }}>
+            <p className="text-caption" style={{ margin: 0, color: '#721c24', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>lightbulb</span>
+              Common solutions:
+            </p>
+            <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1.5rem', textAlign: 'left' }}>
+              <li className="text-caption" style={{ color: '#721c24' }}>Ensure you sent the exact amount</li>
+              <li className="text-caption" style={{ color: '#721c24' }}>Wait for blockchain confirmations</li>
+              <li className="text-caption" style={{ color: '#721c24' }}>Check the transaction hash is correct</li>
+            </ul>
+          </div>
+          <button
+            onClick={() => {
+              setResult(null);
+              setProof(null);
+              setTxHash('');
+            }}
+            className="btn btn-primary"
+            style={{ marginRight: '1rem' }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>refresh</span>
+            Try Again
+          </button>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="btn btn-secondary"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>dashboard</span>
+            Go to Dashboard
+          </button>
         </div>
       )}
 

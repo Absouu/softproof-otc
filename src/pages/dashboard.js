@@ -600,7 +600,18 @@ function WalletRow({ proof, explorerUrl, onSaveProfile, savingProfile, onPublish
       <td>
         <div className="wallet-cell">
           <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'IBM Plex Mono, Monaco, Consolas, monospace', fontSize: '0.85rem' }}>
-            {proof.address.slice(0, 10)}…{proof.address.slice(-6)}
+            <span 
+              className="text-truncate" 
+              style={{ 
+                display: 'inline-block', 
+                maxWidth: '150px',
+                fontFamily: 'Monaco, Consolas, monospace',
+                fontSize: '0.8rem'
+              }}
+              title={proof.address}
+            >
+              {proof.address.slice(0, 10)}…{proof.address.slice(-6)}
+            </span>
           </a>
         </div>
       </td>
