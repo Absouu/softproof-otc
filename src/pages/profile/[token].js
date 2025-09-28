@@ -60,14 +60,6 @@ function SharedProfile() {
           </a>
         </div>
       )}
-      {note && (
-        <div style={{ marginTop: '1rem', background: '#eef7ff', border: '1px solid #cde3ff', borderRadius: '8px', padding: '0.75rem' }}>
-          <p style={{ margin: 0, fontSize: '0.85rem', color: '#24507a' }}>
-            <strong>Note on this wallet:</strong><br />
-            {note}
-          </p>
-        </div>
-      )}
     </div>
   );
 
@@ -76,7 +68,7 @@ function SharedProfile() {
       <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333' }}>
         📞 Contact Info & Notes
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
         <div style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: '8px', padding: '1rem' }}>
           <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>📱</div>
           <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#555', marginBottom: '0.25rem' }}>Phone / SMS / WhatsApp</div>
@@ -105,7 +97,7 @@ function SharedProfile() {
           </div>
         </div>
         {details.note && (
-          <div style={{ background: '#fff8e1', border: '1px solid #ffe08a', borderRadius: '8px', padding: '1rem', gridColumn: '1 / -1' }}>
+          <div style={{ background: '#fff8e1', border: '1px solid #ffe08a', borderRadius: '8px', padding: '1rem' }}>
             <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>📝</div>
             <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#665c00', marginBottom: '0.25rem' }}>Note from wallet owner</div>
             <div style={{ fontSize: '0.9rem', color: '#665c00' }}>
