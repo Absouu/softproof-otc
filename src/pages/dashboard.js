@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Head from 'next/head';
+import ActivityChart from '../components/ActivityChart';
 
 const explorerMap = {
   btc: (addr) => `https://www.blockchain.com/explorer/addresses/btc/${addr}`,
@@ -468,25 +469,91 @@ function Dashboard() {
           )}
 
           {activeTab === 'history' && (
-            <div className="card fade-in">
-              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>history</span>
-                Historical Activity
-              </h3>
-              <p className="text-body" style={{ color: '#64748b', marginBottom: '1rem' }}>
-                View your verification history, transaction logs, and activity timeline.
-              </p>
-              <div style={{ 
-                background: '#f8f9fa', 
-                border: '1px solid #E1E4E8', 
-                borderRadius: '8px', 
-                padding: '2rem', 
-                textAlign: 'center'
-              }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#64748b', marginBottom: '1rem' }}>timeline</span>
-                <p className="text-body" style={{ margin: 0, color: '#64748b' }}>
-                  Historical data will appear here as you complete more verifications
+            <div className="fade-in">
+              <ActivityChart 
+                data={proofs.map(proof => ({
+                  date: new Date(proof.created_at).toISOString().split('T')[0],
+                  verifications: 1,
+                  balance: parseFloat(proof.balance) || 0
+                }))}
+                title="Verification Activity"
+              />
+              
+              <div className="card fade-in" style={{ marginTop: '1.5rem' }}>
+                <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>timeline</span>
+                  Activity Timeline
+                </h3>
+                <p className="text-body" style={{ color: '#64748b', marginBottom: '1rem' }}>
+                  Recent verification activity and transaction history.
                 </p>
+                
+                {proofs.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {proofs.slice(0, 5).map((proof, index) => (
+                      <div 
+                        key={proof.id}
+                        className="hover-lift"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem',
+                          padding: '1rem',
+                          background: '#f8f9fa',
+                          border: '1px solid #E1E4E8',
+                          borderRadius: '8px',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          background: '#3b82f6',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '0.8rem',
+                          fontWeight: '600'
+                        }}>
+                          {index + 1}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div className="text-body" style={{ fontWeight: '500', marginBottom: '0.25rem' }}>
+                            {proof.chain.toUpperCase()} Wallet Verified
+                          </div>
+                          <div className="text-caption" style={{ color: '#64748b' }}>
+                            {new Date(proof.created_at).toLocaleDateString()} • {proof.balance} {proof.chain.toUpperCase()}
+                          </div>
+                        </div>
+                        <div style={{
+                          padding: '0.25rem 0.75rem',
+                          background: '#e8f5e8',
+                          color: '#2e7d32',
+                          borderRadius: '12px',
+                          fontSize: '0.75rem',
+                          fontWeight: '500'
+                        }}>
+                          Verified
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ 
+                    background: '#f8f9fa', 
+                    border: '1px solid #E1E4E8', 
+                    borderRadius: '8px', 
+                    padding: '2rem', 
+                    textAlign: 'center'
+                  }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#64748b', marginBottom: '1rem' }}>timeline</span>
+                    <p className="text-body" style={{ margin: 0, color: '#64748b' }}>
+                      Historical data will appear here as you complete more verifications
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}
