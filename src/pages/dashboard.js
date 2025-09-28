@@ -54,7 +54,7 @@ function Dashboard() {
         break;
       }
     }
-  }, [dashboardQuery.error, sessionReady]);
+  }, [dashboardQuery, sessionReady]);
 
   const saveWalletProfileMutation = useMutation({
     mutationFn: ({ proofId, phone, email, telegram, note, published }) => axios.post('/api/softproof?action=wallet_profile_upsert', {

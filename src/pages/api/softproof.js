@@ -54,8 +54,8 @@ const walletCache = g.userWalletCache;
 async function loadTronUtils() {
   if (tronUtils) return tronUtils;
   try {
-    const module = await import('tronweb');
-    const TronWeb = module.default || module;
+    const tronModule = await import('tronweb');
+    const TronWeb = tronModule.default || tronModule;
     tronUtils = TronWeb.utils;
     return tronUtils;
   } catch (error) {
