@@ -6,8 +6,8 @@ import Head from 'next/head';
 
 const menuItems = [
   { href: '/softproof', label: 'New Verification', icon: 'add_circle' },
-  { href: '/dashboard', label: 'Verification Registry', icon: 'dashboard' },
-  { href: '/live-proofs', label: 'Published Profiles', icon: 'public' },
+  { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+  { href: '/live-proofs', label: 'Public Registry', icon: 'public' },
 ];
 
 export default function Layout({ children }) {

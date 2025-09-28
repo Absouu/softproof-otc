@@ -24,6 +24,7 @@ function Dashboard() {
   const [sessionReady, setSessionReady] = useState(false);
   const [auth, setAuth] = useState({ email: '', password: '', isSignup: false });
   const [authLoading, setAuthLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('active');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -330,6 +331,73 @@ function Dashboard() {
             </div>
           </div>
 
+          {/* Tab Navigation */}
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ 
+              display: 'flex', 
+              borderBottom: '2px solid #E1E4E8',
+              marginBottom: '1.5rem'
+            }}>
+              <button
+                onClick={() => setActiveTab('active')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: 'none',
+                  background: 'none',
+                  borderBottom: activeTab === 'active' ? '2px solid #3b82f6' : '2px solid transparent',
+                  color: activeTab === 'active' ? '#3b82f6' : '#64748b',
+                  fontWeight: activeTab === 'active' ? '600' : '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>verified</span>
+                Active Verifications
+              </button>
+              <button
+                onClick={() => setActiveTab('history')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: 'none',
+                  background: 'none',
+                  borderBottom: activeTab === 'history' ? '2px solid #3b82f6' : '2px solid transparent',
+                  color: activeTab === 'history' ? '#3b82f6' : '#64748b',
+                  fontWeight: activeTab === 'history' ? '600' : '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>history</span>
+                Historical Activity
+              </button>
+              <button
+                onClick={() => setActiveTab('profiles')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: 'none',
+                  background: 'none',
+                  borderBottom: activeTab === 'profiles' ? '2px solid #3b82f6' : '2px solid transparent',
+                  color: activeTab === 'profiles' ? '#3b82f6' : '#64748b',
+                  fontWeight: activeTab === 'profiles' ? '600' : '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>person</span>
+                Profile Management
+              </button>
+            </div>
+          </div>
+
           {/* Welcome Section for New Users */}
           {proofs.length === 0 && (
             <div style={{
@@ -363,66 +431,100 @@ function Dashboard() {
             </div>
           )}
 
-          {/* Agent Information Section */}
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            border: '1px solid #e9ecef',
-            borderRadius: '12px',
-            padding: '1.5rem',
-            marginBottom: '2rem'
-          }}>
-            <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: '600', color: '#1a2332', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#007BFF' }}>handshake</span>
-              Agent Information
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
-                  Your OTC Agent/Desk (Optional)
-                </label>
-                <input
-                  placeholder="Enter your OTC agent or desk name"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #e1e5e9',
-                    borderRadius: '8px',
-                    fontSize: '0.9rem',
-                    fontFamily: 'Inter, system-ui, sans-serif'
-                  }}
-                />
+          {/* Tab Content */}
+          {activeTab === 'active' && (
+            <>
+              {/* Agent Information Section */}
+              <div className="card fade-in" style={{ marginBottom: '2rem' }}>
+                <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>handshake</span>
+                  Agent Information
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+                  <div>
+                    <label className="form-label">
+                      Your OTC Agent/Desk (Optional)
+                    </label>
+                    <input
+                      placeholder="Enter your OTC agent or desk name"
+                      className="form-input"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">
+                      Agent Reference Code (Optional)
+                    </label>
+                    <input
+                      placeholder="For tracking purposes"
+                      className="form-input"
+                    />
+                  </div>
+                </div>
+                <p className="text-caption" style={{ margin: '1rem 0 0 0', fontStyle: 'italic' }}>
+                  Note: Profiles shared through agent channels only
+                </p>
               </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
-                  Agent Reference Code (Optional)
-                </label>
-                <input
-                  placeholder="For tracking purposes"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #e1e5e9',
-                    borderRadius: '8px',
-                    fontSize: '0.9rem',
-                    fontFamily: 'Inter, system-ui, sans-serif'
-                  }}
-                />
+            </>
+          )}
+
+          {activeTab === 'history' && (
+            <div className="card fade-in">
+              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>history</span>
+                Historical Activity
+              </h3>
+              <p className="text-body" style={{ color: '#64748b', marginBottom: '1rem' }}>
+                View your verification history, transaction logs, and activity timeline.
+              </p>
+              <div style={{ 
+                background: '#f8f9fa', 
+                border: '1px solid #E1E4E8', 
+                borderRadius: '8px', 
+                padding: '2rem', 
+                textAlign: 'center'
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#64748b', marginBottom: '1rem' }}>timeline</span>
+                <p className="text-body" style={{ margin: 0, color: '#64748b' }}>
+                  Historical data will appear here as you complete more verifications
+                </p>
               </div>
             </div>
-            <p style={{ margin: '1rem 0 0 0', fontSize: '0.8rem', color: '#6c757d', fontStyle: 'italic' }}>
-              Note: Profiles shared through agent channels only
-            </p>
-          </div>
-        </div>
+          )}
 
-        <div className="card">
-          <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#007BFF' }}>account_balance_wallet</span>
-            Verified Wallets
-          </h3>
-          {proofs.length === 0 ? (
-            <p style={{ color: '#666', fontSize: '0.9rem', margin: 0 }}>No proofs yet. Create your first proof to get started.</p>
-          ) : (
+          {activeTab === 'profiles' && (
+            <div className="card fade-in">
+              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>person</span>
+                Profile Management
+              </h3>
+              <p className="text-body" style={{ color: '#64748b', marginBottom: '1rem' }}>
+                Manage your published profiles and contact information for OTC trading.
+              </p>
+              <div style={{ 
+                background: '#f8f9fa', 
+                border: '1px solid #E1E4E8', 
+                borderRadius: '8px', 
+                padding: '2rem', 
+                textAlign: 'center'
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#64748b', marginBottom: '1rem' }}>person_add</span>
+                <p className="text-body" style={{ margin: 0, color: '#64748b' }}>
+                  Profile management features will be available after your first verification
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Active Verifications Table - Only show in active tab */}
+          {activeTab === 'active' && (
+            <div className="card fade-in">
+              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>account_balance_wallet</span>
+                Verified Wallets
+              </h3>
+              {proofs.length === 0 ? (
+                <p className="text-body" style={{ color: '#64748b', margin: 0 }}>No proofs yet. Create your first proof to get started.</p>
+              ) : (
             <div className="wallet-table-wrapper">
               <table className="wallet-table">
                 <thead>
@@ -451,6 +553,8 @@ function Dashboard() {
             </table>
           </div>
         )}
+            </div>
+          )}
         </div>
       </div>
     </>
