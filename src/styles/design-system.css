@@ -6,21 +6,34 @@
 
 /* CSS Variables for Design System */
 :root {
-  /* Typography */
+  /* Typography System - Standardized Scale */
   --font-primary: 'Inter', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', 'Monaco', 'Consolas', monospace;
-  --font-size-base: 16px;
-  --line-height-body: 1.5;
-  --line-height-headers: 1.2;
+  
+  /* Typography Scale - 8px grid system */
+  --text-xs: 12px;      /* 0.75rem - metadata only */
+  --text-sm: 14px;      /* 0.875rem - captions */
+  --text-base: 16px;    /* 1rem - body text (accessibility standard) */
+  --text-lg: 18px;      /* 1.125rem - large body */
+  --text-xl: 20px;      /* 1.25rem - subsection headers */
+  --text-2xl: 24px;     /* 1.5rem - section headers */
+  --text-3xl: 32px;     /* 2rem - page titles */
+  
+  /* Line Heights - Optimal Readability */
+  --leading-tight: 1.25;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
   
   /* Font Weights */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
+  --font-weight-semibold: 600;
   --font-weight-bold: 700;
   
-  /* Colors - Primary Palette */
-  --color-primary: #007BFF;
-  --color-secondary: #1a2332;
+  /* Colors - Refined Palette */
+  --color-primary: #3b82f6;        /* Accent Blue */
+  --color-secondary: #1a2332;      /* Navy */
+  --color-slate: #64748b;          /* Slate */
   --color-success: #4CAF50;
   --color-warning: #FF0000;
   --color-text-primary: #212529;
@@ -28,6 +41,11 @@
   --color-background-primary: #FFFFFF;
   --color-background-secondary: #F5F5F5;
   --color-border: #E1E4E8;
+  
+  /* Visual Hierarchy Colors */
+  --color-primary-40: rgba(59, 130, 246, 0.4);  /* Primary 40% weight */
+  --color-primary-35: rgba(59, 130, 246, 0.35); /* Primary 35% weight */
+  --color-primary-25: rgba(59, 130, 246, 0.25); /* Primary 25% weight */
   
   /* Spacing System */
   --spacing-xs: 4px;
@@ -53,10 +71,15 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
   
-  /* Transitions */
+  /* Transitions and Animations */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
+  
+  /* Micro-animations */
+  --animation-fade-in: fadeIn 0.3s ease;
+  --animation-slide-up: slideUp 0.3s ease;
+  --animation-scale: scale 0.2s ease;
 }
 
 /* Global Reset and Base Styles */
@@ -79,27 +102,35 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography Scale */
+/* Typography Scale - Standardized */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-headers);
+  line-height: var(--leading-tight);
   color: var(--color-text-primary);
   margin: 0 0 var(--spacing-md) 0;
 }
 
-h1 { font-size: 3rem; }
-h2 { font-size: 2.5rem; }
-h3 { font-size: 2rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1.125rem; }
+h1 { font-size: var(--text-3xl); }  /* 32px - page titles */
+h2 { font-size: var(--text-2xl); }  /* 24px - section headers */
+h3 { font-size: var(--text-xl); }   /* 20px - subsection headers */
+h4 { font-size: var(--text-lg); }   /* 18px - large body */
+h5 { font-size: var(--text-base); } /* 16px - body text */
+h6 { font-size: var(--text-sm); }   /* 14px - captions */
 
 p {
   margin: 0 0 var(--spacing-md) 0;
-  font-size: 1rem;
-  line-height: var(--line-height-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
 }
+
+/* Visual Hierarchy Classes */
+.text-primary { font-size: var(--text-3xl); font-weight: var(--font-weight-bold); }
+.text-secondary { font-size: var(--text-2xl); font-weight: var(--font-weight-semibold); }
+.text-tertiary { font-size: var(--text-xl); font-weight: var(--font-weight-medium); }
+.text-body { font-size: var(--text-base); font-weight: var(--font-weight-regular); }
+.text-caption { font-size: var(--text-sm); font-weight: var(--font-weight-regular); }
+.text-meta { font-size: var(--text-xs); font-weight: var(--font-weight-regular); }
 
 /* Professional Button Styles */
 .btn {
@@ -197,18 +228,19 @@ p {
   cursor: pointer;
 }
 
-/* Card Components */
+/* Card Components - Information Architecture */
 .card {
   background: white;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--padding-base);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .card-header {
@@ -218,10 +250,70 @@ p {
 }
 
 .card-title {
-  font-size: 1.3rem;
+  font-size: var(--text-xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin: 0;
+}
+
+/* Visual Hierarchy Cards */
+.card-primary {
+  background: linear-gradient(135deg, var(--color-primary-40), white);
+  border: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-secondary {
+  background: white;
+  border: 1px solid var(--color-slate);
+  opacity: 0.9;
+}
+
+.card-tertiary {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  opacity: 0.8;
+}
+
+/* Card Grid Layout */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+.card-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.card-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+/* Primary Action Card */
+.card-primary-action {
+  background: linear-gradient(135deg, var(--color-primary-40), white);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+}
+
+.card-primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.2);
+}
+
+.card-primary-action .btn {
+  font-size: var(--text-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  margin-top: var(--spacing-md);
 }
 
 /* Alert Components */
@@ -372,6 +464,170 @@ p {
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
   }
+}
+
+/* Modal Improvements - Smooth Slide-in Panels */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-panel {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--text-xl);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.modal-close:hover {
+  color: var(--color-text-primary);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+}
+
+/* Progress Indicators */
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width var(--transition-normal);
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.progress-step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.progress-step.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.progress-step.completed {
+  background: var(--color-success);
+  color: white;
+}
+
+.progress-step.pending {
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Micro-animations for interactions */
+.hover-lift {
+  transition: transform var(--transition-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease;
+}
+
+.scale-in {
+  animation: scale 0.2s ease;
 }
 
 /* Print Styles */

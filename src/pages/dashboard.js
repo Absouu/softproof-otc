@@ -294,55 +294,35 @@ function Dashboard() {
         <div style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div>
-              <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', fontWeight: '700', color: '#1a2332', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '24px', color: '#007BFF' }}>dashboard</span>
+              <h1 className="text-primary" style={{ margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '24px', color: '#3b82f6' }}>dashboard</span>
                 Wallet Verification Registry
               </h1>
-              <p style={{ margin: 0, fontSize: '0.9rem', color: '#6c757d' }}>
+              <p className="text-body" style={{ margin: 0, color: '#64748b' }}>
                 Manage your verified wallets and contact profiles for OTC trading
               </p>
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
               <button
                 onClick={() => queryClient.invalidateQueries(['dashboard', token])}
+                className="btn btn-primary hover-lift"
                 style={{
-                  background: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}
-                onMouseOver={(e) => (e.target.style.background = '#0056b3')}
-                onMouseOut={(e) => (e.target.style.background = '#007bff')}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>refresh</span>
                 Update Balances
               </button>
               <button
                 onClick={() => router.push('/softproof')}
+                className="btn btn-success hover-lift"
                 style={{
-                  background: '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}
-                onMouseOver={(e) => (e.target.style.background = '#218838')}
-                onMouseOut={(e) => (e.target.style.background = '#4CAF50')}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add_circle</span>
                 Create New Verification
