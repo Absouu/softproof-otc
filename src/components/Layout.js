@@ -5,9 +5,9 @@ import axios from 'axios';
 import Head from 'next/head';
 
 const menuItems = [
-  { href: '/softproof', label: 'New Verification', icon: 'add_circle' },
-  { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { href: '/live-proofs', label: 'Public Registry', icon: 'public' },
+  { href: '/softproof', label: 'Verify Wallet', icon: 'verified_user' },
+  { href: '/dashboard', label: 'My Wallets', icon: 'account_balance_wallet' },
+  { href: '/live-proofs', label: 'Browse Profiles', icon: 'search' },
 ];
 
 export default function Layout({ children }) {
@@ -87,17 +87,16 @@ export default function Layout({ children }) {
         top: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#e8f5e8',
-        border: '1px solid #4CAF50',
-        padding: '12px 0',
+        background: '#3b82f6',
+        color: 'white',
+        padding: '8px 0',
         textAlign: 'center',
-        fontSize: '0.9rem',
+        fontSize: '0.8rem',
         fontWeight: '500',
-        color: '#2e7d32',
         zIndex: 1000
       }}>
-        <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>lock</span>
-        No wallet connection required • We never ask for your private keys • Agent-facilitated OTC only
+        <span className="material-symbols-outlined" style={{ fontSize: '14px', marginRight: '8px' }}>shield</span>
+        Secure • Non-custodial • Agent-facilitated
       </div>
       
       <div style={{ display: 'flex', flex: 1 }}>

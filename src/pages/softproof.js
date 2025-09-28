@@ -402,121 +402,37 @@ function SoftProof() {
           </div>
         </div>
         
-        {/* Safety Reminder Box */}
-        <div style={{
-          backgroundColor: '#fff3cd',
-          border: '2px solid #FF0000',
-          borderRadius: '8px',
-          padding: '1rem',
-          marginBottom: '1.5rem',
-          textAlign: 'center'
-        }}>
+        {/* Simplified Security Notice */}
+        <div className="alert alert-info" style={{ marginBottom: '2rem', textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '0.5rem' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '20px', color: '#FF0000' }}>security</span>
-            <strong style={{ color: '#FF0000', fontSize: '14px' }}>Security Notice</strong>
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>shield</span>
+            <span className="text-body" style={{ fontWeight: '600' }}>Secure Verification</span>
           </div>
-          <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#856404', fontWeight: '500' }}>
-            • No wallet connection required - keep your keys secure
-          </p>
-          <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#856404', fontWeight: '500' }}>
-            • You're sending FROM your wallet, not connecting it
-          </p>
-          <p style={{ margin: 0, fontSize: '0.9rem', color: '#856404', fontWeight: '500' }}>
-            • SoftProof never has access to your funds
+          <p className="text-caption" style={{ margin: 0, color: '#0c5460' }}>
+            Send a small amount to verify ownership • No wallet connection needed • Funds non-refundable
           </p>
         </div>
-        <div style={{ 
-          background: '#f8f9fa', 
-          border: '1px solid #e9ecef', 
-          borderRadius: '8px', 
-          padding: '1rem', 
-          marginBottom: '1.5rem',
-          fontSize: '0.9rem',
-          color: '#555',
-          lineHeight: '1.5'
-        }}>
-          <p style={{ margin: '0 0 0.5rem 0' }}>
-            <strong>How it works:</strong> SoftProof verifies wallet control via on-chain micropayments to a dedicated address. Funds remain non-custodial and are not returned for security purposes.
-          </p>
-          <p style={{ margin: 0, color: '#FF0000', fontWeight: '600', fontSize: '14px' }}>
-            ⚠️ Send only verification amount (e.g., 0.0001 BTC) — funds are non-refundable
-          </p>
-        </div>
-
-        {/* Why This Method Info Box */}
-        <details style={{ marginBottom: '1.5rem' }}>
-          <summary style={{
-            cursor: 'pointer',
-            padding: '1rem',
-            backgroundColor: '#e8f4fd',
-            border: '1px solid #007BFF',
-            borderRadius: '8px',
-            fontWeight: '600',
-            color: '#007BFF',
-            fontSize: '0.9rem'
-          }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>help</span>
-            Why micropayments instead of wallet connections?
-          </summary>
-          <div style={{
-            padding: '1rem',
-            backgroundColor: '#f8f9fa',
-            border: '1px solid #e9ecef',
-            borderTop: 'none',
-            borderRadius: '0 0 8px 8px',
-            fontSize: '0.9rem',
-            color: '#555'
-          }}>
-            <p style={{ margin: '0 0 1rem 0', fontWeight: '600', color: '#FF0000' }}>
-              Wallet connections (like MetaMask) grant websites permission to:
-            </p>
-            <ul style={{ margin: '0 0 1rem 0', paddingLeft: '1.5rem' }}>
-              <li>Read all your balances</li>
-              <li>Request transaction signatures</li>
-              <li>Potentially drain wallets through exploits</li>
-            </ul>
-            <p style={{ margin: '0 0 1rem 0', fontWeight: '600', color: '#4CAF50' }}>
-              SoftProof's method:
-            </p>
-            <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-              <li>You send a tiny amount from your wallet (one-way)</li>
-              <li>Proves control without any permissions</li>
-              <li>Similar to how exchanges verify ownership</li>
-              <li>No smart contract risks</li>
-            </ul>
-          </div>
-        </details>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
-              <SecurityTooltip content="Enter your wallet address here. You'll send a small amount FROM this address to prove you control it. We never connect to your wallet directly.">
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>account_balance_wallet</span>
-                  Your Wallet Address
-                  <span className="material-symbols-outlined" style={{ fontSize: '14px', color: '#6c757d' }}>help</span>
-                </span>
-              </SecurityTooltip>
+          <div className="form-group">
+            <label className="form-label">
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>account_balance_wallet</span>
+              Wallet Address
             </label>
             <input
-              placeholder="Enter your wallet address (e.g., bc1q... or 0x...)"
+              placeholder="bc1q... or 0x..."
               value={formData.wa}
               onChange={e => setFormData({ ...formData, wa: e.target.value })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e1e5e9',
-                borderRadius: '8px',
-                fontSize: '0.9rem',
-                fontFamily: 'Inter, system-ui, sans-serif'
-              }}
+              className="form-input"
+              style={{ fontFamily: 'IBM Plex Mono, Monaco, monospace', fontSize: '0.9rem' }}
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-grid">
-            <div>
-              <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>link</span>Blockchain
+          <div className="card-grid-2" style={{ gap: '1rem' }}>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>link</span>
+                Network
               </label>
               <select
                 value={formData.chain}
@@ -530,30 +446,23 @@ function SoftProof() {
                     baseAmount: chain === 'btc' ? 0.0001 : chain === 'eth' ? 0.0001 : 10
                   });
                 }}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #e1e5e9',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  fontFamily: 'Inter, system-ui, sans-serif'
-                }}
+                className="form-select"
               >
-                <option value="btc">Bitcoin (BTC)</option>
-                <option value="eth">Ethereum (ETH)</option>
-                <option value="trx">TRON (TRX)</option>
+                <option value="btc">Bitcoin</option>
+                <option value="eth">Ethereum</option>
+                <option value="trx">TRON</option>
               </select>
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>attach_money</span>Small Proof Amount
+            <div className="form-group">
+              <label className="form-label">
+                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>attach_money</span>
+                Amount ({formData.baseAmountCurrency.toUpperCase()})
               </label>
               <input
                 type="number"
                 step="0.0001"
                 min="0.0001"
-                placeholder={`Amount in ${formData.baseAmountCurrency.toUpperCase()}`}
                 value={formData.baseAmount}
                 onChange={e =>
                   setFormData({
@@ -561,62 +470,34 @@ function SoftProof() {
                     baseAmount: parseFloat(e.target.value) || 0.0001,
                   })
                 }
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #e1e5e9',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  fontFamily: 'Inter, system-ui, sans-serif'
-                }}
+                className="form-input"
               />
             </div>
           </div>
 
-          <SecurityTooltip content="This creates a unique address tied to your account. Sending the micropayment from your wallet proves you control it without exposing keys.">
-            <button 
-              onClick={handleInitiate} 
-              disabled={loading || !formData.wa || !session}
-              style={{
-                background: loading || !formData.wa || !session ? '#6c757d' : '#007bff',
-                color: 'white',
-                border: 'none',
-                padding: '0.875rem 1.5rem',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: loading || !formData.wa || !session ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'Inter, system-ui, sans-serif',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                justifyContent: 'center'
-              }}
-              onMouseOver={(e) => {
-                if (!loading && formData.wa && session) {
-                  e.target.style.background = '#0056b3';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!loading && formData.wa && session) {
-                  e.target.style.background = '#007bff';
-                }
-              }}
-            >
-              {loading ? (
-                <>
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>refresh</span>
-                  Generating Address...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>send</span>
-                  Generate Verification Address
-                </>
-              )}
-            </button>
-          </SecurityTooltip>
+          <button 
+            onClick={handleInitiate} 
+            disabled={loading || !formData.wa || !session}
+            className="btn btn-primary hover-lift"
+            style={{
+              width: '100%',
+              fontSize: '1rem',
+              padding: '1rem',
+              marginTop: '0.5rem'
+            }}
+          >
+            {loading ? (
+              <>
+                <span className="material-symbols-outlined loading-spinner" style={{ fontSize: '16px', marginRight: '8px' }}>refresh</span>
+                Generating...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>rocket_launch</span>
+                Start Verification
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -630,118 +511,85 @@ function SoftProof() {
           maxWidth: '600px',
           margin: '0 auto 2rem'
         }}>
-          <h4 className="text-tertiary" style={{ margin: '0 0 1.5rem 0', textAlign: 'center' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '8px' }}>payment</span>Step 2: Send Micropayment
+          <h4 className="text-secondary" style={{ margin: '0 0 1rem 0', textAlign: 'center' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '8px' }}>send</span>
+            Send Payment
           </h4>
           
-          <div style={{
-            background: '#e8f5e8',
-            border: '1px solid #4caf50',
-            borderRadius: '8px',
-            padding: '1rem',
-            marginBottom: '1.5rem',
-            textAlign: 'center'
-          }}>
-            <p className="text-body" style={{ margin: 0, color: '#2e7d32', fontWeight: '500' }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>info</span>
-              Send the exact amount to the address below to complete verification
+          <div className="alert alert-success" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+            <p className="text-body" style={{ margin: 0, fontWeight: '500' }}>
+              Send exactly <strong>{proof.expectedAmount} {formData.token}</strong> to the address below
             </p>
           </div>
           
-          <div style={{ 
-            background: '#f8f9fa', 
-            border: '1px solid #e9ecef', 
-            borderRadius: '8px', 
-            padding: '1.5rem', 
-            marginBottom: '1.5rem' 
-          }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', fontWeight: '500', color: '#555' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>my_location</span>Send to Address:
+          <div className="card" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <p className="text-caption" style={{ margin: '0 0 0.5rem 0', color: '#64748b' }}>
+                Verification Address
               </p>
-              <code style={{ 
-                wordBreak: 'break-all', 
-                fontSize: '0.85rem',
-                background: '#e9ecef',
-                padding: '0.5rem',
-                borderRadius: '4px',
-                display: 'block',
-                fontFamily: 'Monaco, Consolas, monospace'
-              }}>
+              <div style={{
+                background: '#1a2332',
+                color: 'white',
+                padding: '1rem',
+                borderRadius: '8px',
+                fontFamily: 'IBM Plex Mono, Monaco, monospace',
+                fontSize: '0.9rem',
+                wordBreak: 'break-all',
+                cursor: 'pointer'
+              }}
+              onClick={() => navigator.clipboard.writeText(proof.depositAddress)}
+              title="Click to copy"
+              >
                 {proof.depositAddress}
-              </code>
+              </div>
+              <p className="text-meta" style={{ margin: '0.5rem 0 0 0', color: '#64748b' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '12px', marginRight: '4px' }}>content_copy</span>
+                Click to copy address
+              </p>
             </div>
 
             <div>
-              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', fontWeight: '500', color: '#555' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>attach_money</span>Exact Amount to Send:
+              <p className="text-caption" style={{ margin: '0 0 0.5rem 0', color: '#64748b' }}>
+                Amount to Send
               </p>
-              <code style={{ 
-                fontSize: '1.1rem',
-                fontWeight: '600',
-                background: '#007bff',
-                color: 'white',
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                fontFamily: 'Monaco, Consolas, monospace'
+              <div style={{ 
+                fontSize: '1.25rem',
+                fontWeight: '700',
+                color: '#3b82f6',
+                fontFamily: 'IBM Plex Mono, Monaco, monospace'
               }}>
                 {proof.expectedAmount} {formData.token}
-              </code>
+              </div>
             </div>
           </div>
 
-          <div style={{
-            background: '#e8f5e8',
-            border: '1px solid #4caf50',
-            borderRadius: '8px',
-            padding: '1rem',
-            marginBottom: '1.5rem'
-          }}>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#2e7d32', textAlign: 'center' }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>schedule</span>We'll automatically check for your payment every 30 seconds.
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <button 
-              onClick={handleCheckStatus} 
-              disabled={checkingStatus}
-              style={{
-                background: checkingStatus ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                padding: '0.75rem 2rem',
-                borderRadius: '8px',
-                fontSize: '0.9rem',
-                fontWeight: '500',
-                cursor: checkingStatus ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'Inter, system-ui, sans-serif'
-              }}
-              onMouseOver={(e) => {
-                if (!checkingStatus) {
-                  e.target.style.background = '#218838';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!checkingStatus) {
-                  e.target.style.background = '#28a745';
-                }
-              }}
-            >
-              {checkingStatus ? (
-                <>
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>refresh</span>
-                  Checking...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>check_circle</span>
-                  Check Status Now
-                </>
-              )}
-            </button>
-          </div>
+          <button 
+            onClick={handleCheckStatus} 
+            disabled={checkingStatus}
+            className="btn btn-success hover-lift"
+            style={{
+              width: '100%',
+              fontSize: '1rem',
+              padding: '1rem'
+            }}
+          >
+            {checkingStatus ? (
+              <>
+                <span className="material-symbols-outlined loading-spinner" style={{ fontSize: '16px', marginRight: '8px' }}>refresh</span>
+                Checking Payment...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>search</span>
+                Check Payment Status
+              </>
+            )}
+          </button>
+          
+          <p className="text-caption" style={{ margin: '1rem 0 0 0', textAlign: 'center', color: '#64748b' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '14px', marginRight: '4px' }}>schedule</span>
+            Auto-checking every 30 seconds
+          </p>
         </div>
       )}
 

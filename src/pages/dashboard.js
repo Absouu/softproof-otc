@@ -355,8 +355,8 @@ function Dashboard() {
                   gap: '8px'
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>verified</span>
-                Active Verifications
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>account_balance_wallet</span>
+                My Wallets
               </button>
               <button
                 onClick={() => setActiveTab('history')}
@@ -374,27 +374,8 @@ function Dashboard() {
                   gap: '8px'
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>history</span>
-                Historical Activity
-              </button>
-              <button
-                onClick={() => setActiveTab('profiles')}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  border: 'none',
-                  background: 'none',
-                  borderBottom: activeTab === 'profiles' ? '2px solid #3b82f6' : '2px solid transparent',
-                  color: activeTab === 'profiles' ? '#3b82f6' : '#64748b',
-                  fontWeight: activeTab === 'profiles' ? '600' : '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>person</span>
-                Profile Management
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>timeline</span>
+                Activity
               </button>
             </div>
           </div>
@@ -558,29 +539,6 @@ function Dashboard() {
             </div>
           )}
 
-          {activeTab === 'profiles' && (
-            <div className="card fade-in">
-              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>person</span>
-                Profile Management
-              </h3>
-              <p className="text-body" style={{ color: '#64748b', marginBottom: '1rem' }}>
-                Manage your published profiles and contact information for OTC trading.
-              </p>
-              <div style={{ 
-                background: '#f8f9fa', 
-                border: '1px solid #E1E4E8', 
-                borderRadius: '8px', 
-                padding: '2rem', 
-                textAlign: 'center'
-              }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#64748b', marginBottom: '1rem' }}>person_add</span>
-                <p className="text-body" style={{ margin: 0, color: '#64748b' }}>
-                  Profile management features will be available after your first verification
-                </p>
-              </div>
-            </div>
-          )}
 
           {/* Active Verifications Table - Only show in active tab */}
           {activeTab === 'active' && (
