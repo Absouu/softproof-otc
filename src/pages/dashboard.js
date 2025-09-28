@@ -355,12 +355,19 @@ function WalletRow({ proof, explorerUrl, onSaveProfile, savingProfile, onPublish
   });
 
   useEffect(() => {
-    setContact({
-      phone: profile.phone || '',
-      email: profile.email || '',
-      telegram: profile.telegram || '',
-      note: profile.note || '',
-    });
+    // Only reset if we have a profile and the current contact is empty
+    const hasCurrentData = contact.phone || contact.email || contact.telegram || contact.note;
+    const hasProfileData = profile.phone || profile.email || profile.telegram || profile.note;
+    
+    // Only update if we have profile data and no current data, or if profile data has changed
+    if (hasProfileData && !hasCurrentData) {
+      setContact({
+        phone: profile.phone || '',
+        email: profile.email || '',
+        telegram: profile.telegram || '',
+        note: profile.note || '',
+      });
+    }
   }, [profile.phone, profile.email, profile.telegram, profile.note]);
 
   const handleSave = async (published = undefined) => {

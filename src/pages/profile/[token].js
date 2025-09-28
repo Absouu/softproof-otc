@@ -32,7 +32,7 @@ function SharedProfile() {
             href={explorerMap[proofs?.chain]?.(proofs?.address) || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#333', fontSize: '1rem', display: 'block', textDecoration: 'none', fontWeight: '600' }}
+            style={{ color: '#007bff', fontSize: '1rem', display: 'block', textDecoration: 'underline', fontWeight: '600' }}
           >
             {proofs?.address}
           </a>
@@ -49,7 +49,7 @@ function SharedProfile() {
       </div>
       {proofs?.tx_hash && (
         <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#666' }}>
-          <strong>TX:</strong>{' '}
+          <strong>Proof TX:</strong>{' '}
           <a
             href={`${explorerMap[proofs?.chain]?.('').replace(/address\/$/, 'tx/')}${proofs.tx_hash}`}
             target="_blank"
@@ -74,7 +74,7 @@ function SharedProfile() {
   const renderContactCard = (details) => (
     <div className="card">
       <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333' }}>
-        📞 Contact Information
+        📞 Contact Info & Notes
       </h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
         <div style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: '8px', padding: '1rem' }}>
@@ -104,6 +104,15 @@ function SharedProfile() {
             ) : 'Not provided'}
           </div>
         </div>
+        {details.note && (
+          <div style={{ background: '#fff8e1', border: '1px solid #ffe08a', borderRadius: '8px', padding: '1rem', gridColumn: '1 / -1' }}>
+            <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>📝</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#665c00', marginBottom: '0.25rem' }}>Note from wallet owner</div>
+            <div style={{ fontSize: '0.9rem', color: '#665c00' }}>
+              {details.note}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

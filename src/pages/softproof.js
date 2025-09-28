@@ -202,27 +202,74 @@ function SoftProof() {
       </div>
 
       {!session && (
-        <div className="auth-container">
-          <h3>Login Required</h3>
-          <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
+        <div className="auth-container" style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333', textAlign: 'center' }}>
+            Login Required
+          </h3>
+          <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1.5rem', textAlign: 'center' }}>
             Login to create proofs, track status, and manage your contact profile.
           </p>
-          <input
-            placeholder="Email"
-            value={auth.email}
-            onChange={e => setAuth({ ...auth, email: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={auth.password}
-            onChange={e => setAuth({ ...auth, password: e.target.value })}
-          />
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button onClick={handleAuth}>{auth.isSignup ? 'Sign Up' : 'Login'}</button>
-            <button onClick={() => setAuth({ ...auth, isSignup: !auth.isSignup })}>
-              {auth.isSignup ? 'Switch to Login' : 'Switch to Sign Up'}
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input
+              placeholder="Email"
+              value={auth.email}
+              onChange={e => setAuth({ ...auth, email: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e1e5e9',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={auth.password}
+              onChange={e => setAuth({ ...auth, password: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e1e5e9',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            />
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                onClick={handleAuth}
+                style={{
+                  flex: 1,
+                  background: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                {auth.isSignup ? 'Sign Up' : 'Login'}
+              </button>
+              <button 
+                onClick={() => setAuth({ ...auth, isSignup: !auth.isSignup })}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  color: '#007bff',
+                  border: '1px solid #007bff',
+                  padding: '0.75rem',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer'
+                }}
+              >
+                {auth.isSignup ? 'Switch to Login' : 'Switch to Sign Up'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -236,9 +283,26 @@ function SoftProof() {
         maxWidth: '600px',
         margin: '0 auto 2rem'
       }}>
-        <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333', textAlign: 'center' }}>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.3rem', fontWeight: '600', color: '#333', textAlign: 'center' }}>
           Create Your Proof
         </h3>
+        <div style={{ 
+          background: '#f8f9fa', 
+          border: '1px solid #e9ecef', 
+          borderRadius: '8px', 
+          padding: '1rem', 
+          marginBottom: '1.5rem',
+          fontSize: '0.9rem',
+          color: '#555',
+          lineHeight: '1.5'
+        }}>
+          <p style={{ margin: '0 0 0.5rem 0' }}>
+            <strong>How it works:</strong> SoftProof uses micropayments from your wallet to a fresh platform wallet to prove your ownership of your wallet. The wallet is specific to your account, so there is no risk of cross contamination with other wallets.
+          </p>
+          <p style={{ margin: 0, color: '#dc3545', fontWeight: '500' }}>
+            ⚠️ Please only send a small amount as funds cannot be returned.
+          </p>
+        </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
@@ -274,7 +338,7 @@ function SoftProof() {
                     chain,
                     token: chain.toUpperCase(),
                     baseAmountCurrency: chain,
-                    baseAmount: chain === 'btc' ? 0.0001 : chain === 'eth' ? 0.001 : 10
+                    baseAmount: chain === 'btc' ? 0.0001 : chain === 'eth' ? 0.0001 : 10
                   });
                 }}
                 style={{
@@ -294,7 +358,7 @@ function SoftProof() {
 
             <div>
               <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
-                💰 Amount to Prove
+                💰 Small Proof Amount
               </label>
               <input
                 type="number"
