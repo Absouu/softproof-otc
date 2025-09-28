@@ -2,11 +2,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import Head from 'next/head';
 
 const menuItems = [
-  { href: '/softproof', label: 'Create Proof', icon: '🧾' },
-  { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-  { href: '/live-proofs', label: 'Live Proofs', icon: '🌐' },
+  { href: '/softproof', label: 'New Verification', icon: 'add_circle' },
+  { href: '/dashboard', label: 'Verification Registry', icon: 'dashboard' },
+  { href: '/live-proofs', label: 'Published Profiles', icon: 'public' },
 ];
 
 export default function Layout({ children }) {
@@ -75,8 +76,32 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'Inter, system-ui, sans-serif', background: '#f4f5f7' }}>
-      <aside style={{ width: '260px', background: '#111827', color: '#fff', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <>
+      <Head>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+      </Head>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'Inter, system-ui, sans-serif', background: '#f4f5f7' }}>
+        {/* Trust Banner */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#e8f5e8',
+        border: '1px solid #4CAF50',
+        padding: '12px 0',
+        textAlign: 'center',
+        fontSize: '0.9rem',
+        fontWeight: '500',
+        color: '#2e7d32',
+        zIndex: 1000
+      }}>
+        <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '8px' }}>lock</span>
+        No wallet connection required • We never ask for your private keys • Agent-facilitated OTC only
+      </div>
+      
+      <div style={{ display: 'flex', flex: 1 }}>
+        <aside style={{ width: '260px', background: '#1a2332', color: '#fff', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '48px' }}>
         <div>
           <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>SoftProof OTC</div>
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', lineHeight: 1.4, color: 'rgba(255,255,255,0.7)' }}>
@@ -102,7 +127,7 @@ export default function Layout({ children }) {
                     transition: 'background 0.2s ease',
                   }}
                 >
-                  <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>{item.icon}</span>
                   <span>{item.label}</span>
                 </a>
               </Link>
@@ -192,11 +217,57 @@ export default function Layout({ children }) {
               Log in
             </button>
           )}
+          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+              SoftProof OTC v2.0
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', marginTop: '0.25rem' }}>
+              Professional Registry
+            </div>
+          </div>
         </div>
-      </aside>
-      <main style={{ flex: 1, padding: '3rem 3.5rem', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
-        {children}
-      </main>
-    </div>
+        </aside>
+        <main style={{ flex: 1, padding: '3rem 3.5rem', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', marginTop: '48px' }}>
+          {children}
+        </main>
+      </div>
+      
+      {/* Footer with Trust Signals */}
+      <footer style={{
+        backgroundColor: '#1a2332',
+        color: 'white',
+        padding: '2rem 0',
+        textAlign: 'center',
+        marginTop: 'auto'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>security</span>
+              <span>256-bit Encryption</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>lock</span>
+              <span>Non-Custodial</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>verified_user</span>
+              <span>GDPR Compliant</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>shield</span>
+              <span>Enterprise Security</span>
+            </div>
+          </div>
+          <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem' }}>
+            Powered by enterprise-grade blockchain infrastructure
+          </p>
+          <p style={{ margin: 0, fontSize: '0.8rem', color: '#6c757d' }}>
+            Non-custodial verification protocol • No third-party wallet APIs • Agent-facilitated OTC only
+          </p>
+        </div>
+      </footer>
+      </div>
+    </>
   );
 }

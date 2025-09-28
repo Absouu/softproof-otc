@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import Head from 'next/head';
 
 const explorerMap = {
   btc: (addr) => `https://www.blockchain.com/explorer/addresses/btc/${addr}`,
@@ -283,47 +284,177 @@ function Dashboard() {
   }
 
   return (
-    <div style={{ width: '100%', maxWidth: '1100px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '600', color: '#333' }}>Dashboard</h2>
-        <button
-          onClick={() => queryClient.invalidateQueries(['dashboard', token])}
-          style={{
-            background: '#007bff',
-            color: 'white',
-            border: 'none',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseOver={(e) => (e.target.style.background = '#0056b3')}
-          onMouseOut={(e) => (e.target.style.background = '#007bff')}
-        >
-          Refresh Data
-        </button>
-      </div>
+    <>
+      <Head>
+        <title>Wallet Verification Registry - SoftProof OTC</title>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+      </Head>
+      <div style={{ width: '100%', maxWidth: '1100px', margin: '0 auto' }}>
+        {/* Professional Header */}
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div>
+              <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', fontWeight: '700', color: '#1a2332', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '24px', color: '#007BFF' }}>dashboard</span>
+                Wallet Verification Registry
+              </h1>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#6c757d' }}>
+                Manage your verified wallets and contact profiles for OTC trading
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                onClick={() => queryClient.invalidateQueries(['dashboard', token])}
+                style={{
+                  background: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseOver={(e) => (e.target.style.background = '#0056b3')}
+                onMouseOut={(e) => (e.target.style.background = '#007bff')}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>refresh</span>
+                Update Balances
+              </button>
+              <button
+                onClick={() => router.push('/softproof')}
+                style={{
+                  background: '#4CAF50',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseOver={(e) => (e.target.style.background = '#218838')}
+                onMouseOut={(e) => (e.target.style.background = '#4CAF50')}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add_circle</span>
+                Create New Verification
+              </button>
+            </div>
+          </div>
 
-      <div className="card">
-        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', color: '#333' }}>
-          Verified Wallets
-        </h3>
-        {proofs.length === 0 ? (
-          <p style={{ color: '#666', fontSize: '0.9rem', margin: 0 }}>No proofs yet. Create your first proof to get started.</p>
-        ) : (
-          <div className="wallet-table-wrapper">
-            <table className="wallet-table">
-              <thead>
-                <tr>
-                  <th>Wallet</th>
-                  <th>Balance</th>
-                  <th>Date of proof</th>
-                  <th>Wallet contact details</th>
-                  <th>Share</th>
-                </tr>
-              </thead>
+          {/* Welcome Section for New Users */}
+          {proofs.length === 0 && (
+            <div style={{
+              backgroundColor: '#e8f4fd',
+              border: '1px solid #007BFF',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem'
+            }}>
+              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', color: '#1a2332', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '20px', color: '#007BFF' }}>info</span>
+                Getting Started with Safe Verification
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#1a2332' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>check_circle</span>
+                  <span>1. Enter your wallet address (you won't connect it)</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#1a2332' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>check_circle</span>
+                  <span>2. Send a micro-amount to verify ownership</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#1a2332' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#4CAF50' }}>check_circle</span>
+                  <span>3. Share your verification with your OTC agent</span>
+                </div>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.85rem', color: '#6c757d', fontStyle: 'italic' }}>
+                Remember: We never ask for seed phrases, private keys, or wallet connections.
+              </p>
+            </div>
+          )}
+
+          {/* Agent Information Section */}
+          <div style={{
+            backgroundColor: '#f8f9fa',
+            border: '1px solid #e9ecef',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            marginBottom: '2rem'
+          }}>
+            <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: '600', color: '#1a2332', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#007BFF' }}>handshake</span>
+              Agent Information
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
+                  Your OTC Agent/Desk (Optional)
+                </label>
+                <input
+                  placeholder="Enter your OTC agent or desk name"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #e1e5e9',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    fontFamily: 'Inter, system-ui, sans-serif'
+                  }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#555', marginBottom: '0.5rem' }}>
+                  Agent Reference Code (Optional)
+                </label>
+                <input
+                  placeholder="For tracking purposes"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #e1e5e9',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    fontFamily: 'Inter, system-ui, sans-serif'
+                  }}
+                />
+              </div>
+            </div>
+            <p style={{ margin: '1rem 0 0 0', fontSize: '0.8rem', color: '#6c757d', fontStyle: 'italic' }}>
+              Note: Profiles shared through agent channels only
+            </p>
+          </div>
+        </div>
+
+        <div className="card">
+          <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#007BFF' }}>account_balance_wallet</span>
+            Verified Wallets
+          </h3>
+          {proofs.length === 0 ? (
+            <p style={{ color: '#666', fontSize: '0.9rem', margin: 0 }}>No proofs yet. Create your first proof to get started.</p>
+          ) : (
+            <div className="wallet-table-wrapper">
+              <table className="wallet-table">
+                <thead>
+                  <tr>
+                    <th>Wallet Address</th>
+                    <th>Network</th>
+                    <th>Balance</th>
+                    <th>Verification Date</th>
+                    <th>Contact Details</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
               <tbody>
                 {proofs.map((proof) => (
                   <WalletRow
@@ -340,8 +471,9 @@ function Dashboard() {
             </table>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -383,68 +515,162 @@ function WalletRow({ proof, explorerUrl, onSaveProfile, savingProfile, onPublish
     <tr>
       <td>
         <div className="wallet-cell">
-          <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+          <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'IBM Plex Mono, Monaco, Consolas, monospace', fontSize: '0.85rem' }}>
             {proof.address.slice(0, 10)}…{proof.address.slice(-6)}
           </a>
-          <span className={`chain-badge ${proof.chain}`}>{proof.chain.toUpperCase()}</span>
         </div>
       </td>
-      <td>{proof.balance != null ? `${proof.balance.toFixed(6)} ${proof.token}` : '—'}</td>
-      <td>{proof.verified_at ? new Date(proof.verified_at).toLocaleString() : '—'}</td>
+      <td>
+        <span className={`chain-badge ${proof.chain}`} style={{ fontSize: '0.8rem', fontWeight: '500' }}>
+          {proof.chain.toUpperCase()}
+        </span>
+      </td>
+      <td style={{ fontFamily: 'IBM Plex Mono, Monaco, Consolas, monospace', fontSize: '0.85rem' }}>
+        {proof.balance != null ? `${proof.balance.toFixed(6)} ${proof.token}` : '—'}
+      </td>
+      <td style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+        {proof.verified_at ? new Date(proof.verified_at).toLocaleDateString() : '—'}
+      </td>
       <td>
         <div style={{ display: 'grid', gap: '0.5rem' }}>
           <div>
-            <label className="field-label" style={{ marginBottom: '0.25rem' }}>📱 Phone / SMS / WhatsApp</label>
+            <label className="field-label" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>phone</span>
+              Phone / SMS / WhatsApp
+            </label>
             <input
               value={contact.phone}
               onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
               placeholder="+1 234 567 8900"
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e1e5e9', borderRadius: '6px', fontSize: '0.85rem' }}
             />
           </div>
           <div>
-            <label className="field-label" style={{ marginBottom: '0.25rem' }}>📧 Email</label>
+            <label className="field-label" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>email</span>
+              Email
+            </label>
             <input
               type="email"
               value={contact.email}
               onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
               placeholder="contact@example.com"
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e1e5e9', borderRadius: '6px', fontSize: '0.85rem' }}
             />
           </div>
           <div>
-            <label className="field-label" style={{ marginBottom: '0.25rem' }}>✈️ Telegram</label>
+            <label className="field-label" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>send</span>
+              Telegram
+            </label>
             <input
               value={contact.telegram}
               onChange={(e) => setContact((prev) => ({ ...prev, telegram: e.target.value }))}
               placeholder="@username"
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e1e5e9', borderRadius: '6px', fontSize: '0.85rem' }}
             />
           </div>
           <div>
-            <label className="field-label" style={{ marginBottom: '0.25rem' }}>📝 Note on wallet</label>
+            <label className="field-label" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>note</span>
+              Trader Notes
+            </label>
             <textarea
               value={contact.note}
               onChange={(e) => setContact((prev) => ({ ...prev, note: e.target.value }))}
               placeholder="Add context about this wallet"
-              style={{ width: '100%', minHeight: '80px' }}
+              style={{ width: '100%', minHeight: '80px', padding: '0.5rem', border: '1px solid #e1e5e9', borderRadius: '6px', fontSize: '0.85rem', resize: 'vertical' }}
             />
           </div>
           <button
             onClick={() => handleSave()}
             disabled={savingProfile}
-            style={{ marginTop: '0.25rem', padding: '0.4rem 0.75rem', borderRadius: '6px', border: 'none', cursor: savingProfile ? 'not-allowed' : 'pointer', background: '#0ea5e9', color: 'white' }}
+            style={{ 
+              marginTop: '0.25rem', 
+              padding: '0.5rem 1rem', 
+              borderRadius: '6px', 
+              border: 'none', 
+              cursor: savingProfile ? 'not-allowed' : 'pointer', 
+              background: '#4CAF50', 
+              color: 'white',
+              fontSize: '0.85rem',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              justifyContent: 'center'
+            }}
           >
-            {savingProfile ? 'Saving…' : 'Save Details'}
+            <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>save</span>
+            {savingProfile ? 'Saving…' : 'Update Details'}
           </button>
         </div>
       </td>
       <td>
-        <div className="wallet-actions">
+        <div className="wallet-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {proof.wallet_profile?.published ? (
             <>
-              <button onClick={() => onPublish({ copyOnly: true })}>Copy Link</button>
-              <button onClick={() => onUnpublish()}>Unpublish</button>
+              <button 
+                onClick={() => onPublish({ copyOnly: true })}
+                style={{
+                  padding: '0.4rem 0.8rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: '#007BFF',
+                  color: 'white',
+                  fontSize: '0.8rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  justifyContent: 'center'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
+                Copy URL
+              </button>
+              <button 
+                onClick={() => onUnpublish()}
+                style={{
+                  padding: '0.4rem 0.8rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: '#dc3545',
+                  color: 'white',
+                  fontSize: '0.8rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  justifyContent: 'center'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>visibility_off</span>
+                Unpublish
+              </button>
             </>
           ) : (
-            <button onClick={handlePublish} disabled={savingProfile}>
+            <button 
+              onClick={handlePublish} 
+              disabled={savingProfile}
+              style={{
+                padding: '0.4rem 0.8rem',
+                borderRadius: '6px',
+                border: 'none',
+                background: savingProfile ? '#6c757d' : '#4CAF50',
+                color: 'white',
+                fontSize: '0.8rem',
+                fontWeight: '500',
+                cursor: savingProfile ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                justifyContent: 'center'
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>publish</span>
               {savingProfile ? 'Publishing…' : 'Publish'}
             </button>
           )}
