@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
 import * as bitcoin from 'bitcoinjs-lib';
 import { ECPairFactory } from 'ecpair';
-import * as ecc from 'tiny-secp256k1';
+import * as ecc from 'secp256k1';
 import { ethers } from 'ethers';
 // const TronWeb = require('tronweb');
 
