@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Head from 'next/head';
 import ActivityChart from '../components/ActivityChart';
+import InviteWizard from '../components/InviteWizard';
 
 const explorerMap = {
   btc: (addr) => `https://www.blockchain.com/explorer/addresses/btc/${addr}`,
@@ -41,6 +42,8 @@ function Dashboard() {
   const [authLoading, setAuthLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('active');
   const [userRole, setUserRole] = useState('wallet_holder');
+  const [showInviteWizard, setShowInviteWizard] = useState(false);
+  const [invites, setInvites] = useState([]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -357,6 +360,19 @@ function Dashboard() {
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>refresh</span>
                 Update Balances
+              </button>
+              <button
+                onClick={() => setShowInviteWizard(true)}
+                className="btn btn-primary hover-lift"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginRight: '0.5rem'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>share</span>
+                Issue Invite
               </button>
               <button
                 onClick={() => router.push('/softproof')}
@@ -884,6 +900,18 @@ function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Invite Wizard */}
+      <InviteWizard
+        isOpen={showInviteWizard}
+        onClose={() => setShowInviteWizard(false)}
+        onSuccess={(invite) => {
+          setInvites(prev => [invite, ...prev]);
+          alert(`Invite created successfully!\n\nShare URL: ${invite.share_url}`);
+        }}
+        proofs={proofs}
+        session={session}
+      />
     </>
   );
 }
