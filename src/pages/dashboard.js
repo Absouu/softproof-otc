@@ -411,8 +411,11 @@ function Dashboard() {
                     });
                     console.log('Role updated:', response.data);
                     queryClient.invalidateQueries(['userRole', token]);
+                    alert('Role updated successfully!');
                   } catch (error) {
                     console.error('Error updating role:', error);
+                    const errorMsg = error.response?.data?.error || error.message;
+                    alert(`Error updating role: ${errorMsg}`);
                   }
                 }}
                 className="btn btn-secondary"
