@@ -128,6 +128,8 @@ export default async function handler(req, res) {
       let expiresAt = null;
       if (expiry_type === 'fixed') {
         expiresAt = new Date(Date.now() + fixed_days * 24 * 60 * 60 * 1000);
+      } else if (expiry_type === 'none') {
+        expiresAt = null; // No expiry
       }
 
       // Generate link token and JWT

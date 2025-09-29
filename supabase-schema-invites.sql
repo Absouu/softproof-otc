@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS invites (
   gate_password TEXT, -- hashed password if gate_type = 'password'
   
   -- Expiry options
-  expiry_type TEXT CHECK (expiry_type IN ('usage', 'inactivity', 'fixed')) DEFAULT 'fixed',
+  expiry_type TEXT CHECK (expiry_type IN ('usage', 'inactivity', 'fixed', 'none')) DEFAULT 'none',
   max_uses INTEGER DEFAULT 10, -- for usage-based expiry
   inactivity_days INTEGER DEFAULT 7, -- for inactivity-based expiry
   fixed_days INTEGER DEFAULT 14, -- for fixed expiry

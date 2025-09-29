@@ -11,7 +11,7 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
     is_gated: false,
     gate_type: 'none',
     gate_password: '',
-    expiry_type: 'fixed',
+    expiry_type: 'none',
     max_uses: 10,
     inactivity_days: 7,
     fixed_days: 14,
@@ -318,6 +318,7 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
                   fontSize: '0.9rem'
                 }}
               >
+                <option value="none">No Expiry (Permanent)</option>
                 <option value="fixed">Fixed Date (X days)</option>
                 <option value="usage">After X Views</option>
                 <option value="inactivity">After X Days of Inactivity</option>
