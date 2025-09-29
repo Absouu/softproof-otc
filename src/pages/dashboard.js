@@ -43,6 +43,7 @@ function Dashboard() {
   const [activeTab, setActiveTab] = useState('active');
   const [userRole, setUserRole] = useState('wallet_holder');
   const [showInviteWizard, setShowInviteWizard] = useState(false);
+  const [shareType, setShareType] = useState('simple');
   const [invites, setInvites] = useState([]);
 
   useEffect(() => {
@@ -361,19 +362,38 @@ function Dashboard() {
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>refresh</span>
                 Update Balances
               </button>
-              <button
-                onClick={() => setShowInviteWizard(true)}
-                className="btn btn-primary hover-lift"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginRight: '0.5rem'
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>share</span>
-                Issue Invite
-              </button>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  onClick={() => {
+                    setShareType('simple');
+                    setShowInviteWizard(true);
+                  }}
+                  className="btn btn-primary hover-lift"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>share</span>
+                  Share Profile
+                </button>
+                <button
+                  onClick={() => {
+                    setShareType('advanced');
+                    setShowInviteWizard(true);
+                  }}
+                  className="btn btn-secondary hover-lift"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>lock</span>
+                  Secure Link
+                </button>
+              </div>
               <button
                 onClick={() => router.push('/softproof')}
                 className="btn btn-success hover-lift"
@@ -911,6 +931,7 @@ function Dashboard() {
         }}
         proofs={proofs}
         session={session}
+        shareType={shareType}
       />
     </>
   );

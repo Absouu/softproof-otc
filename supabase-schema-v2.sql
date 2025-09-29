@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS agent_assignments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   wallet_holder_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   agent_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  agent_email TEXT, -- Store email for pending assignments
   proof_id UUID REFERENCES proofs(id) ON DELETE CASCADE,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'declined', 'revoked')),
   created_at TIMESTAMPTZ DEFAULT NOW(),

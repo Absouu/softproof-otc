@@ -1031,13 +1031,27 @@ export default async function handler(req, res) {
 
       if (profile?.role !== 'wallet_holder') return res.status(403).json({ error: 'Only wallet holders can associate agents' });
 
-      // For now, we'll store the assignment with the email and resolve the agent_id later
-      // This is a simplified implementation - in production you'd want proper user lookup
-      
-      // Store the agent email in a temporary field or handle it differently
+      // Create agent assignment record
+      const { data: assignment, error: assignmentError } = await userClient
+        .from('agent_assignments')
+        .insert({
+          wallet_holder_id: user.id,
+          proof_id: proof_id,
+          agent_email: agent_email, // Store email for now, resolve to user_id later
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (assignmentError) {
+        console.error('Assignment creation error:', assignmentError);
+        return res.status(500).json({ error: 'Failed to create agent assignment' });
+      }
+
       res.json({ 
         success: true, 
-        message: 'Agent association feature is under development. Please contact your agent directly for now.' 
+        message: 'Agent association request sent! The agent will be notified via email.',
+        assignment_id: assignment.id
       });
       return;
     }

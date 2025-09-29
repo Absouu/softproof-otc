@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
+function InviteWizard({ isOpen, onClose, onSuccess, proofs, session, shareType = 'simple' }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -82,7 +82,8 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600' }}>
-            {createdInvite ? 'Invite Created Successfully!' : 'Create Shareable Link'}
+            {createdInvite ? 'Link Created Successfully!' : 
+             shareType === 'simple' ? 'Share Profile' : 'Create Secure Link'}
           </h2>
           <button
             onClick={handleClose}
@@ -192,19 +193,39 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
         {/* Step 2: Security & Gating */}
         {step === 2 && (
           <div>
-            <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Security & Access Control</h3>
+            <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>
+              {shareType === 'simple' ? 'Sharing Options' : 'Security & Access Control'}
+            </h3>
             
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.is_gated}
-                  onChange={e => setFormData({ ...formData, is_gated: e.target.checked })}
-                  style={{ marginRight: '0.5rem' }}
-                />
-                <span style={{ fontWeight: '500' }}>Require authentication to view</span>
-              </label>
-            </div>
+            {shareType === 'simple' ? (
+              <div style={{ 
+                background: '#f0f9ff', 
+                border: '1px solid #bae6fd', 
+                borderRadius: '8px', 
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#0ea5e9' }}>info</span>
+                  <span style={{ fontWeight: '500', color: '#0c4a6e' }}>Simple Sharing</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#0c4a6e' }}>
+                  Creates a public link that anyone can view. Perfect for general sharing.
+                </p>
+              </div>
+            ) : (
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.is_gated}
+                    onChange={e => setFormData({ ...formData, is_gated: e.target.checked })}
+                    style={{ marginRight: '0.5rem' }}
+                  />
+                  <span style={{ fontWeight: '500' }}>Require authentication to view</span>
+                </label>
+              </div>
+            )}
 
             {formData.is_gated && (
               <div style={{ marginBottom: '1rem' }}>
