@@ -907,7 +907,7 @@ function Dashboard() {
         onClose={() => setShowInviteWizard(false)}
         onSuccess={(invite) => {
           setInvites(prev => [invite, ...prev]);
-          alert(`Invite created successfully!\n\nShare URL: ${invite.share_url}`);
+          // Success message is now shown in the wizard itself
         }}
         proofs={proofs}
         session={session}

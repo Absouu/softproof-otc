@@ -19,6 +19,8 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
     notify_email: ''
   });
 
+  const [createdInvite, setCreatedInvite] = useState(null);
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -29,13 +31,20 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
         headers: { Authorization: `Bearer ${session?.access_token}` }
       });
 
-      onSuccess(response.data.invite);
-      onClose();
+      setCreatedInvite(response.data.invite);
+      // Don't close immediately, show the success screen
     } catch (error) {
       alert('Error creating invite: ' + (error.response?.data?.error || error.message));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    if (createdInvite) {
+      onSuccess(createdInvite);
+    }
+    onClose();
   };
 
   const handleProofToggle = (proofId) => {
@@ -73,10 +82,10 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600' }}>
-            Create Shareable Link
+            {createdInvite ? 'Invite Created Successfully!' : 'Create Shareable Link'}
           </h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               background: 'none',
               border: 'none',
@@ -445,6 +454,167 @@ function InviteWizard({ isOpen, onClose, onSuccess, proofs, session }) {
                 }}
               >
                 {loading ? 'Creating...' : 'Create Link'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Success Screen */}
+        {createdInvite && (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#10b981' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '3rem' }}>check_circle</span>
+            </div>
+            <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.5rem', fontWeight: '600', color: '#10b981' }}>
+              Invite Link Created!
+            </h3>
+            
+            <div style={{ 
+              background: '#f0f9ff', 
+              border: '1px solid #bae6fd', 
+              borderRadius: '8px', 
+              padding: '1.5rem', 
+              marginBottom: '1.5rem',
+              textAlign: 'left'
+            }}>
+              <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: '600' }}>Shareable Link:</h4>
+              <div style={{
+                background: 'white',
+                border: '1px solid #e1e5e9',
+                borderRadius: '6px',
+                padding: '0.75rem',
+                fontFamily: 'Monaco, Consolas, monospace',
+                fontSize: '0.9rem',
+                wordBreak: 'break-all',
+                cursor: 'pointer',
+                marginBottom: '0.5rem'
+              }}
+              onClick={() => {
+                navigator.clipboard.writeText(createdInvite.share_url);
+                alert('Link copied to clipboard!');
+              }}
+              title="Click to copy"
+              >
+                {createdInvite.share_url}
+              </div>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: '#666' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '12px', marginRight: '4px' }}>content_copy</span>
+                Click to copy link
+              </p>
+            </div>
+
+            {formData.is_gated && formData.gate_type === 'password' && (
+              <div style={{ 
+                background: '#fef3c7', 
+                border: '1px solid #f59e0b', 
+                borderRadius: '8px', 
+                padding: '1.5rem', 
+                marginBottom: '1.5rem',
+                textAlign: 'left'
+              }}>
+                <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: '600', color: '#92400e' }}>
+                  🔐 Password Protection:
+                </h4>
+                <div style={{
+                  background: 'white',
+                  border: '1px solid #e1e5e9',
+                  borderRadius: '6px',
+                  padding: '0.75rem',
+                  fontFamily: 'Monaco, Consolas, monospace',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  color: '#92400e',
+                  cursor: 'pointer',
+                  marginBottom: '0.5rem'
+                }}
+                onClick={() => {
+                  navigator.clipboard.writeText(formData.gate_password);
+                  alert('Password copied to clipboard!');
+                }}
+                title="Click to copy"
+                >
+                  {formData.gate_password}
+                </div>
+                <p style={{ margin: 0, fontSize: '0.8rem', color: '#92400e' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '12px', marginRight: '4px' }}>content_copy</span>
+                  Click to copy password
+                </p>
+              </div>
+            )}
+
+            <div style={{ 
+              background: '#f3f4f6', 
+              border: '1px solid #d1d5db', 
+              borderRadius: '8px', 
+              padding: '1rem', 
+              marginBottom: '1.5rem',
+              textAlign: 'left'
+            }}>
+              <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '1rem', fontWeight: '600' }}>Link Settings:</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem', fontSize: '0.9rem' }}>
+                <div>
+                  <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>Expiry</div>
+                  <div style={{ fontWeight: '500' }}>
+                    {formData.expiry_type === 'none' ? 'Never expires' :
+                     formData.expiry_type === 'fixed' ? `${formData.fixed_days} days` :
+                     formData.expiry_type === 'usage' ? `After ${formData.max_uses} views` :
+                     `${formData.inactivity_days} days inactivity`}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>Max Views</div>
+                  <div style={{ fontWeight: '500' }}>
+                    {formData.max_views || 'Unlimited'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>Protection</div>
+                  <div style={{ fontWeight: '500' }}>
+                    {formData.is_gated ? 
+                      (formData.gate_type === 'password' ? 'Password Protected' : 'Email Required') : 
+                      'Public Access'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(createdInvite.share_url);
+                  alert('Link copied to clipboard!');
+                }}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#3b82f6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>content_copy</span>
+                Copy Link
+              </button>
+              <button
+                onClick={handleClose}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: 'transparent',
+                  color: '#3b82f6',
+                  border: '1px solid #3b82f6',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                Done
               </button>
             </div>
           </div>
