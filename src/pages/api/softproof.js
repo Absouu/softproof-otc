@@ -575,9 +575,19 @@ export default async function handler(req, res) {
     // Auth endpoints
     if (action === 'signup') {
       if (!supabase) return res.status(500).json({ error: 'Supabase not configured' });
-      const { email, password } = req.body || {};
+      const { email, password, role = 'wallet_holder' } = req.body || {};
+      if (!['wallet_holder', 'agent'].includes(role)) return res.status(400).json({ error: 'Invalid role' });
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) return res.status(400).json({ error: error.message });
+      
+      // Create profile with role
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({ user_id: data.user.id, role });
+        if (profileError) console.error('Profile creation error:', profileError);
+      }
+      
       return res.json(data);
     }
 
@@ -937,6 +947,252 @@ export default async function handler(req, res) {
       if (!session || session.userId !== user.id) return res.status(400).json({ error: 'Invalid session' });
 
       return res.json({ message: 'Manual submission not required. Waiting for automatic polling.' });
+    }
+
+    // ============================================
+    // NEW DUAL-ROLE SYSTEM ENDPOINTS
+    // ============================================
+
+    // Get user role
+    if (action === 'get_role') {
+      const tokenHeader = getAuthToken(req);
+      const user = await getUserFromToken(tokenHeader);
+      if (!user) return res.status(401).json({ error: 'Login required' });
+      const userClient = createSupabaseForToken(tokenHeader);
+
+      const { data: profile } = await userClient
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+
+      res.json({ role: profile?.role || 'wallet_holder' });
+      return;
+    }
+
+    // Update user role
+    if (action === 'update_role') {
+      const tokenHeader = getAuthToken(req);
+      const user = await getUserFromToken(tokenHeader);
+      if (!user) return res.status(401).json({ error: 'Login required' });
+      const userClient = createSupabaseForToken(tokenHeader);
+
+      const { role } = req.body || {};
+      if (!['wallet_holder', 'agent'].includes(role)) return res.status(400).json({ error: 'Invalid role' });
+
+      const { error } = await userClient
+        .from('profiles')
+        .upsert({ user_id: user.id, role });
+
+      if (error) return res.status(500).json({ error: error.message });
+      res.json({ success: true, role });
+      return;
+    }
+
+    // Associate wallet to agent (for wallet holders)
+    if (action === 'associate_agent') {
+      const tokenHeader = getAuthToken(req);
+      const user = await getUserFromToken(tokenHeader);
+      if (!user) return res.status(401).json({ error: 'Login required' });
+      const userClient = createSupabaseForToken(tokenHeader);
+
+      const { proof_id, agent_email } = req.body || {};
+      if (!proof_id || !agent_email) return res.status(400).json({ error: 'Missing proof_id or agent_email' });
+
+      // Check if user is wallet holder
+      const { data: profile } = await userClient
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile?.role !== 'wallet_holder') return res.status(403).json({ error: 'Only wallet holders can associate agents' });
+
+      // Find agent by email
+      const { data: agentUser } = await userClient.auth.admin.getUserByEmail(agent_email);
+      if (!agentUser) return res.status(404).json({ error: 'Agent not found' });
+
+      // Create assignment
+      const { data, error } = await userClient
+        .from('agent_assignments')
+        .insert({
+          wallet_holder_id: user.id,
+          agent_id: agentUser.id,
+          proof_id,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) return res.status(500).json({ error: error.message });
+      res.json({ success: true, assignment: data });
+      return;
+    }
+
+    // Create client proof link (for agents)
+    if (action === 'create_client_proof') {
+      const tokenHeader = getAuthToken(req);
+      const user = await getUserFromToken(tokenHeader);
+      if (!user) return res.status(401).json({ error: 'Login required' });
+      const userClient = createSupabaseForToken(tokenHeader);
+
+      const { receiving_address, amount, chain, token } = req.body || {};
+      if (!receiving_address || !amount || !chain) return res.status(400).json({ error: 'Missing required fields' });
+
+      // Check if user is agent
+      const { data: profile } = await userClient
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile?.role !== 'agent') return res.status(403).json({ error: 'Only agents can create client proofs' });
+
+      // Generate share token
+      const shareToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      const { data, error } = await userClient
+        .from('client_proof_links')
+        .insert({
+          agent_id: user.id,
+          receiving_address,
+          amount: parseFloat(amount),
+          chain,
+          token: token || chain.toUpperCase(),
+          share_token: shareToken,
+          expires_at: expiresAt.toISOString(),
+          status: 'active'
+        })
+        .select()
+        .single();
+
+      if (error) return res.status(500).json({ error: error.message });
+
+      const shareUrl = `${BASE_URL}/client-proof/${shareToken}`;
+      res.json({ 
+        success: true, 
+        client_proof: data,
+        share_url: shareUrl,
+        qr_data: shareUrl
+      });
+      return;
+    }
+
+    // Get agent dashboard data
+    if (action === 'agent_dashboard') {
+      const tokenHeader = getAuthToken(req);
+      const user = await getUserFromToken(tokenHeader);
+      if (!user) return res.status(401).json({ error: 'Login required' });
+      const userClient = createSupabaseForToken(tokenHeader);
+
+      // Check if user is agent
+      const { data: profile } = await userClient
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile?.role !== 'agent') return res.status(403).json({ error: 'Only agents can access agent dashboard' });
+
+      // Get assignments
+      const { data: assignments } = await userClient
+        .from('agent_assignments')
+        .select(`
+          *,
+          proofs(address, chain, token, verified_at),
+          profiles!agent_assignments_wallet_holder_id_fkey(phone, email_social, telegram)
+        `)
+        .eq('agent_id', user.id);
+
+      // Get client proof links
+      const { data: clientLinks } = await userClient
+        .from('client_proof_links')
+        .select('*')
+        .eq('agent_id', user.id)
+        .order('created_at', { ascending: false });
+
+      res.json({
+        assignments: assignments || [],
+        client_links: clientLinks || []
+      });
+      return;
+    }
+
+    // Verify client proof (public endpoint)
+    if (action === 'verify_client_proof') {
+      const { share_token } = req.body || {};
+      if (!share_token) return res.status(400).json({ error: 'Missing share_token' });
+
+      const { data: clientProof } = await supabase
+        .from('client_proof_links')
+        .select('*')
+        .eq('share_token', share_token)
+        .eq('status', 'active')
+        .gt('expires_at', new Date().toISOString())
+        .single();
+
+      if (!clientProof) return res.status(404).json({ error: 'Client proof not found or expired' });
+
+      res.json({
+        receiving_address: clientProof.receiving_address,
+        amount: clientProof.amount,
+        chain: clientProof.chain,
+        token: clientProof.token,
+        expires_at: clientProof.expires_at
+      });
+      return;
+    }
+
+    // Complete client proof (when payment is verified)
+    if (action === 'complete_client_proof') {
+      const { share_token, client_wallet_address, proof_id } = req.body || {};
+      if (!share_token || !client_wallet_address) return res.status(400).json({ error: 'Missing required fields' });
+
+      const { data: clientProof } = await supabase
+        .from('client_proof_links')
+        .select('*')
+        .eq('share_token', share_token)
+        .eq('status', 'active')
+        .single();
+
+      if (!clientProof) return res.status(404).json({ error: 'Client proof not found' });
+
+      // Update client proof as completed
+      const { error } = await supabase
+        .from('client_proof_links')
+        .update({
+          status: 'completed',
+          client_wallet_address,
+          proof_id,
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', clientProof.id);
+
+      if (error) return res.status(500).json({ error: error.message });
+      res.json({ success: true });
+      return;
+    }
+
+    // Revoke client proof link
+    if (action === 'revoke_client_proof') {
+      const tokenHeader = getAuthToken(req);
+      const user = await getUserFromToken(tokenHeader);
+      if (!user) return res.status(401).json({ error: 'Login required' });
+      const userClient = createSupabaseForToken(tokenHeader);
+
+      const { client_proof_id } = req.body || {};
+      if (!client_proof_id) return res.status(400).json({ error: 'Missing client_proof_id' });
+
+      const { error } = await userClient
+        .from('client_proof_links')
+        .update({ status: 'revoked' })
+        .eq('id', client_proof_id)
+        .eq('agent_id', user.id);
+
+      if (error) return res.status(500).json({ error: error.message });
+      res.json({ success: true });
+      return;
     }
 
     res.status(400).json({ error: 'Invalid action' });

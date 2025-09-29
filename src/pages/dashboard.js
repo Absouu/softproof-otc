@@ -18,6 +18,20 @@ const fetchDashboard = async (token) => {
   return data;
 };
 
+const fetchUserRole = async (token) => {
+  const { data } = await axios.post('/api/softproof?action=get_role', {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data.role;
+};
+
+const fetchAgentDashboard = async (token) => {
+  const { data } = await axios.post('/api/softproof?action=agent_dashboard', {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+};
+
 function Dashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -26,6 +40,7 @@ function Dashboard() {
   const [auth, setAuth] = useState({ email: '', password: '', isSignup: false });
   const [authLoading, setAuthLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('active');
+  const [userRole, setUserRole] = useState('wallet_holder');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -44,9 +59,22 @@ function Dashboard() {
     enabled: Boolean(token),
   });
 
+  const roleQuery = useQuery({
+    queryKey: ['userRole', token],
+    queryFn: () => fetchUserRole(token),
+    enabled: Boolean(token),
+    onSuccess: (role) => setUserRole(role),
+  });
+
+  const agentDashboardQuery = useQuery({
+    queryKey: ['agentDashboard', token],
+    queryFn: () => fetchAgentDashboard(token),
+    enabled: Boolean(token && userRole === 'agent'),
+  });
+
   useEffect(() => {
     if (!sessionReady) return;
-    const queries = [dashboardQuery];
+    const queries = [dashboardQuery, roleQuery, agentDashboardQuery];
     for (const q of queries) {
       const err = q.error;
       if (err && axios.isAxiosError(err) && err.response?.status === 401) {
@@ -332,6 +360,36 @@ function Dashboard() {
             </div>
           </div>
 
+          {/* Role-based Navigation */}
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <div style={{ 
+                padding: '0.5rem 1rem', 
+                background: userRole === 'wallet_holder' ? '#e3f2fd' : '#f3e5f5', 
+                borderRadius: '8px',
+                border: `2px solid ${userRole === 'wallet_holder' ? '#2196f3' : '#9c27b0'}`
+              }}>
+                <span style={{ 
+                  fontSize: '0.9rem', 
+                  fontWeight: '600', 
+                  color: userRole === 'wallet_holder' ? '#1976d2' : '#7b1fa2' 
+                }}>
+                  {userRole === 'wallet_holder' ? '👤 Wallet Holder' : '🤝 Agent'}
+                </span>
+              </div>
+              {userRole === 'agent' && (
+                <button
+                  onClick={() => router.push('/agent/create-proof')}
+                  className="btn btn-primary hover-lift"
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add</span>
+                  Create Client Proof
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Tab Navigation */}
           <div style={{ marginBottom: '2rem' }}>
             <div className="tab-nav" style={{ 
@@ -339,44 +397,89 @@ function Dashboard() {
               borderBottom: '2px solid #E1E4E8',
               marginBottom: '1.5rem'
             }}>
-              <button
-                onClick={() => setActiveTab('active')}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  border: 'none',
-                  background: 'none',
-                  borderBottom: activeTab === 'active' ? '2px solid #3b82f6' : '2px solid transparent',
-                  color: activeTab === 'active' ? '#3b82f6' : '#64748b',
-                  fontWeight: activeTab === 'active' ? '600' : '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>account_balance_wallet</span>
-                My Wallets
-              </button>
-              <button
-                onClick={() => setActiveTab('history')}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  border: 'none',
-                  background: 'none',
-                  borderBottom: activeTab === 'history' ? '2px solid #3b82f6' : '2px solid transparent',
-                  color: activeTab === 'history' ? '#3b82f6' : '#64748b',
-                  fontWeight: activeTab === 'history' ? '600' : '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>timeline</span>
-                Activity
-              </button>
+              {userRole === 'wallet_holder' ? (
+                <>
+                  <button
+                    onClick={() => setActiveTab('active')}
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      border: 'none',
+                      background: 'none',
+                      borderBottom: activeTab === 'active' ? '2px solid #3b82f6' : '2px solid transparent',
+                      color: activeTab === 'active' ? '#3b82f6' : '#64748b',
+                      fontWeight: activeTab === 'active' ? '600' : '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>account_balance_wallet</span>
+                    My Wallets
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('history')}
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      border: 'none',
+                      background: 'none',
+                      borderBottom: activeTab === 'history' ? '2px solid #3b82f6' : '2px solid transparent',
+                      color: activeTab === 'history' ? '#3b82f6' : '#64748b',
+                      fontWeight: activeTab === 'history' ? '600' : '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>timeline</span>
+                    Activity
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setActiveTab('assignments')}
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      border: 'none',
+                      background: 'none',
+                      borderBottom: activeTab === 'assignments' ? '2px solid #3b82f6' : '2px solid transparent',
+                      color: activeTab === 'assignments' ? '#3b82f6' : '#64748b',
+                      fontWeight: activeTab === 'assignments' ? '600' : '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>assignment</span>
+                    Client Assignments
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('client_proofs')}
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      border: 'none',
+                      background: 'none',
+                      borderBottom: activeTab === 'client_proofs' ? '2px solid #3b82f6' : '2px solid transparent',
+                      color: activeTab === 'client_proofs' ? '#3b82f6' : '#64748b',
+                      fontWeight: activeTab === 'client_proofs' ? '600' : '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>link</span>
+                    Client Proofs
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -414,6 +517,169 @@ function Dashboard() {
           )}
 
           {/* Tab Content */}
+          {userRole === 'agent' && activeTab === 'assignments' && (
+            <div className="card fade-in">
+              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>assignment</span>
+                Client Assignments
+              </h3>
+              {agentDashboardQuery.data?.assignments?.length > 0 ? (
+                <div className="table-container">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Client</th>
+                        <th>Wallet Address</th>
+                        <th>Chain</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {agentDashboardQuery.data.assignments.map((assignment) => (
+                        <tr key={assignment.id}>
+                          <td>
+                            <div>
+                              <div style={{ fontWeight: '500' }}>
+                                {assignment.profiles?.phone || assignment.profiles?.email_social || 'Unknown'}
+                              </div>
+                              {assignment.profiles?.telegram && (
+                                <div style={{ fontSize: '0.8rem', color: '#666' }}>
+                                  @{assignment.profiles.telegram}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <code style={{ fontSize: '0.8rem' }}>
+                              {assignment.proofs?.address}
+                            </code>
+                          </td>
+                          <td>
+                            <span className={`chain-badge ${assignment.proofs?.chain}`}>
+                              {assignment.proofs?.chain?.toUpperCase()}
+                            </span>
+                          </td>
+                          <td>
+                            <span className={`status-badge ${assignment.status}`}>
+                              {assignment.status}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-primary btn-sm"
+                              onClick={() => {
+                                // Handle assignment actions
+                              }}
+                            >
+                              Add Details
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '3rem', marginBottom: '1rem', display: 'block' }}>assignment</span>
+                  <p>No client assignments yet</p>
+                  <p style={{ fontSize: '0.9rem' }}>Clients will appear here when they associate their wallets to you</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {userRole === 'agent' && activeTab === 'client_proofs' && (
+            <div className="card fade-in">
+              <h3 className="text-tertiary" style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#3b82f6' }}>link</span>
+                Client Proof Links
+              </h3>
+              {agentDashboardQuery.data?.client_links?.length > 0 ? (
+                <div className="table-container">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Receiving Address</th>
+                        <th>Amount</th>
+                        <th>Chain</th>
+                        <th>Status</th>
+                        <th>Expires</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {agentDashboardQuery.data.client_links.map((link) => (
+                        <tr key={link.id}>
+                          <td>
+                            <code style={{ fontSize: '0.8rem' }}>
+                              {link.receiving_address}
+                            </code>
+                          </td>
+                          <td>
+                            <strong>{link.amount} {link.token}</strong>
+                          </td>
+                          <td>
+                            <span className={`chain-badge ${link.chain}`}>
+                              {link.chain?.toUpperCase()}
+                            </span>
+                          </td>
+                          <td>
+                            <span className={`status-badge ${link.status}`}>
+                              {link.status}
+                            </span>
+                          </td>
+                          <td>
+                            {new Date(link.expires_at).toLocaleString()}
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button
+                                className="btn btn-primary btn-sm"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(`${window.location.origin}/client-proof/${link.share_token}`);
+                                  alert('Link copied to clipboard!');
+                                }}
+                              >
+                                Copy Link
+                              </button>
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={async () => {
+                                  if (confirm('Are you sure you want to revoke this link?')) {
+                                    try {
+                                      await axios.post('/api/softproof?action=revoke_client_proof', {
+                                        client_proof_id: link.id
+                                      }, {
+                                        headers: { Authorization: `Bearer ${token}` }
+                                      });
+                                      queryClient.invalidateQueries(['agentDashboard', token]);
+                                    } catch (err) {
+                                      alert('Error revoking link: ' + err.message);
+                                    }
+                                  }
+                                }}
+                              >
+                                Revoke
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '3rem', marginBottom: '1rem', display: 'block' }}>link</span>
+                  <p>No client proof links created yet</p>
+                  <p style={{ fontSize: '0.9rem' }}>Create client proof links to facilitate client verifications</p>
+                </div>
+              )}
+            </div>
+          )}
+
           {activeTab === 'active' && (
             <>
               {/* Agent Information Section */}
@@ -593,6 +859,7 @@ function WalletRow({ proof, explorerUrl, onSaveProfile, savingProfile, onPublish
     email: profile.email || '',
     telegram: profile.telegram || '',
     note: profile.note || '',
+    agentEmail: '',
   });
 
   useEffect(() => {
@@ -701,6 +968,55 @@ function WalletRow({ proof, explorerUrl, onSaveProfile, savingProfile, onPublish
               placeholder="Add context about this wallet"
               style={{ width: '100%', minHeight: '80px', padding: '0.5rem', border: '1px solid #e1e5e9', borderRadius: '6px', fontSize: '0.85rem', resize: 'vertical' }}
             />
+          </div>
+          <div>
+            <label className="field-label" style={{ marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: '500' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>handshake</span>
+              Associate to Agent (Optional)
+            </label>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="email"
+                placeholder="agent@example.com"
+                style={{ flex: 1, padding: '0.5rem', border: '1px solid #e1e5e9', borderRadius: '6px', fontSize: '0.85rem' }}
+                onChange={(e) => setContact((prev) => ({ ...prev, agentEmail: e.target.value }))}
+              />
+              <button
+                onClick={async () => {
+                  if (!contact.agentEmail) {
+                    alert('Please enter agent email');
+                    return;
+                  }
+                  try {
+                    await axios.post('/api/softproof?action=associate_agent', {
+                      proof_id: proof.id,
+                      agent_email: contact.agentEmail
+                    }, {
+                      headers: { Authorization: `Bearer ${session?.access_token}` }
+                    });
+                    alert('Agent association request sent!');
+                  } catch (error) {
+                    alert('Error: ' + (error.response?.data?.error || error.message));
+                  }
+                }}
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: '#3b82f6',
+                  color: 'white',
+                  fontSize: '0.85rem',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>send</span>
+                Send
+              </button>
+            </div>
           </div>
           <button
             onClick={() => handleSave()}

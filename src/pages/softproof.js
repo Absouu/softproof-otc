@@ -6,7 +6,7 @@ import Head from 'next/head';
 
 function SoftProof() {
   const [session, setSession] = useState(null);
-  const [auth, setAuth] = useState({ email: '', password: '', isSignup: false });
+  const [auth, setAuth] = useState({ email: '', password: '', isSignup: false, role: 'wallet_holder' });
 
   const [formData, setFormData] = useState({ wa: '', chain: 'btc', token: 'BTC', baseAmount: 0.0001, baseAmountCurrency: 'btc' });
   const [proof, setProof] = useState(null);
@@ -76,6 +76,7 @@ function SoftProof() {
         const { data } = await axios.post('/api/softproof?action=signup', {
           email: auth.email,
           password: auth.password,
+          role: auth.role,
         });
         const signupSession = data?.session;
         const signupUser = data?.user || signupSession?.user;
@@ -260,6 +261,24 @@ function SoftProof() {
                 fontFamily: 'Inter, system-ui, sans-serif'
               }}
             />
+            {auth.isSignup && (
+              <select
+                value={auth.role}
+                onChange={e => setAuth({ ...auth, role: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e1e5e9',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  background: 'white'
+                }}
+              >
+                <option value="wallet_holder">Wallet Holder</option>
+                <option value="agent">Agent</option>
+              </select>
+            )}
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button 
                 onClick={handleAuth}
