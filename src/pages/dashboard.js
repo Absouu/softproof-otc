@@ -44,8 +44,8 @@ function Dashboard() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem('supabase_session');
-    if (stored) {
+      const stored = localStorage.getItem('supabase_session');
+      if (stored) {
       setSession(JSON.parse(stored));
     }
     setSessionReady(true);
@@ -63,11 +63,24 @@ function Dashboard() {
     queryKey: ['userRole', token],
     queryFn: () => fetchUserRole(token),
     enabled: Boolean(token),
-    onSuccess: (role) => setUserRole(role),
   });
 
+  // Update userRole when roleQuery data changes
+  useEffect(() => {
+    if (roleQuery.data) {
+      console.log('Role data received:', roleQuery.data);
+      setUserRole(roleQuery.data);
+      // Set default tab based on role
+      if (roleQuery.data === 'agent') {
+        setActiveTab('assignments');
+      } else {
+        setActiveTab('active');
+      }
+    }
+  }, [roleQuery.data]);
+
   const agentDashboardQuery = useQuery({
-    queryKey: ['agentDashboard', token],
+    queryKey: ['agentDashboard', token, userRole],
     queryFn: () => fetchAgentDashboard(token),
     enabled: Boolean(token && userRole === 'agent'),
   });
@@ -387,6 +400,26 @@ function Dashboard() {
                   Create Client Proof
                 </button>
               )}
+              {/* Debug Role Button */}
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await axios.post('/api/softproof?action=update_role', {
+                      role: userRole === 'agent' ? 'wallet_holder' : 'agent'
+                    }, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    });
+                    console.log('Role updated:', response.data);
+                    queryClient.invalidateQueries(['userRole', token]);
+                  } catch (error) {
+                    console.error('Error updating role:', error);
+                  }
+                }}
+                className="btn btn-secondary"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                Switch to {userRole === 'agent' ? 'Wallet Holder' : 'Agent'}
+              </button>
             </div>
           </div>
 
@@ -1016,8 +1049,8 @@ function WalletRow({ proof, explorerUrl, onSaveProfile, savingProfile, onPublish
                 <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>send</span>
                 Send
               </button>
-            </div>
-          </div>
+      </div>
+    </div>
           <button
             onClick={() => handleSave()}
             disabled={savingProfile}
